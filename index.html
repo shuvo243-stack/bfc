@@ -1,0 +1,143 @@
+bfc-website/
+│── index.html
+│── squad.html
+│── profile.html
+│── fixtures.html
+│── tournaments.html
+│── gallery.html
+│── contact.html
+│── style.css
+│── script.js
+│── data.json
+│── images/         (player photos + logos)
+{
+  "players": [
+    {"id":1,"name":"SHUVO","pos":"Midfielder"},
+    {"id":2,"name":"ZIHAD","pos":"Striker"},
+    {"id":3,"name":"SABBIR","pos":"Winger"},
+    {"id":4,"name":"TAREK","pos":"Winger"},
+    {"id":5,"name":"AHAD","pos":"Defender"},
+    {"id":6,"name":"FOYSHAL","pos":"Defender"},
+    {"id":7,"name":"NAIMUL","pos":"Defender"},
+    {"id":8,"name":"ASIF","pos":"Goalkeeper"}
+    // add all 32 players similarly
+  ],
+  "fixtures": [
+    {"date":"2026-02-05","home":"BFC","away":"United FC","score":"--"},
+    {"date":"2026-02-12","home":"Rivals FC","away":"BFC","score":"--"}
+  ],
+  "tournaments": [
+    {"name":"Local League 2026","status":"Ongoing","position":1},
+    {"name":"City Cup 2026","status":"Upcoming","position":"--"}
+  ]
+}
+fetch("data.json")
+.then(response => response.json())
+.then(data => {
+    // Squad Page
+    if(document.getElementById("squad-grid")){
+        const grid = document.getElementById("squad-grid");
+        data.players.forEach(p=>{
+            let card = document.createElement("div");
+            card.className="player-card";
+            card.innerHTML=`
+            <img src="images/${p.id}.jpg" onerror="this.src='https://via.placeholder.com/250/001a4b/ffffff?text=NO+IMAGE'" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p>${p.pos}</p>
+            <a href="profile.html?id=${p.id}" class="btn">View Profile</a>`;
+            grid.appendChild(card);
+        });
+    }
+
+    // Fixtures Page
+    if(document.getElementById("fixtures-list")){
+        const list = document.getElementById("fixtures-list");
+        data.fixtures.forEach(f=>{
+            let row = document.createElement("tr");
+            row.innerHTML=`<td>${f.date}</td><td>${f.home}</td><td>${f.away}</td><td>${f.score}</td>`;
+            list.appendChild(row);
+        });
+    }
+
+    // Tournaments Page
+    if(document.getElementById("tournaments-list")){
+        const list = document.getElementById("tournaments-list");
+        data.tournaments.forEach(t=>{
+            let row = document.createElement("tr");
+            row.innerHTML=`<td>${t.name}</td><td>${t.status}</td><td>${t.position}</td>`;
+            list.appendChild(row);
+        });
+    }
+
+    // Profile Page
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if(id && data.players.find(p=>p.id==id)){
+        let p = data.players.find(p=>p.id==id);
+        document.getElementById('p-jersey').innerText = "#"+(id<10?"0"+id:id);
+        document.getElementById('p-name').innerText = p.name;
+        document.getElementById('p-pos').innerText = p.pos;
+        document.getElementById('p-img').src=`images/${id}.jpg`;
+    } else if(document.getElementById('p-name')){
+        document.getElementById('p-name').innerText="Player Not Found";
+    }
+});
+body {margin:0;font-family:'Montserrat',sans-serif;background:#f5f6fa;color:#001a4b;}
+header,footer{background:#001a4b;color:#fff;text-align:center;padding:20px;}
+nav{display:flex;justify-content:center;background:#0f3d2e;}
+nav a{color:#fff;padding:15px 20px;text-decoration:none;font-weight:600;}
+nav a:hover{background:#FEBE10;color:#001a4b;}
+.section{padding:40px;text-align:center;border-bottom:1px solid #eee;}
+.btn{display:inline-block;padding:10px 20px;background:#001a4b;color:#fff;text-decoration:none;border-radius:30px;font-weight:bold;}
+.btn:hover{background:#FEBE10;color:#001a4b;}
+.player-card{display:inline-block;background:#fff;margin:15px;padding:15px;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.1);width:200px;}
+.player-card img{width:100%;border-radius:50%;margin-bottom:10px;}
+@media(max-width:768px){.player-card{width:45%;margin:10px;}}
+@media(max-width:480px){.player-card{width:90%;}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bottola FC</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+<h1>Bottola Football Club</h1>
+<p>Local Roots • Tournament Glory</p>
+</header>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="squad.html">Squad</a>
+<a href="fixtures.html">Fixtures</a>
+<a href="tournaments.html">Tournaments</a>
+<a href="gallery.html">Gallery</a>
+<a href="contact.html">Contact</a>
+</nav>
+
+<section class="section">
+<h2>Latest Match</h2>
+<p>BFC 2 – 1 Rivals FC | 22 Jan 2026</p>
+</section>
+
+<section class="section">
+<h2>Upcoming Match</h2>
+<p>BFC vs United FC | 5 Feb 2026</p>
+</section>
+
+<section class="section">
+<h2>Quick Links</h2>
+<a href="squad.html" class="btn">View Squad</a>
+<a href="fixtures.html" class="btn">View Fixtures</a>
+</section>
+
+<footer>
+<p>© 2026 Bottola Football Club | info@bottolafc.com</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
